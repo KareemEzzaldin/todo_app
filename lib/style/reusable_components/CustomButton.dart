@@ -25,7 +25,7 @@ class CustomButton extends StatelessWidget {
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
               ),),
-            Icon(Icons.arrow_forward)
+            Icon(Icons.arrow_forward,color: Colors.white,)
           ],
         ))
     ;

@@ -1,15 +1,30 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:todo_app/style/AppStyle.dart';
 import 'package:todo_app/style/reusable_components/CustomButton.dart';
 import 'package:todo_app/style/reusable_components/CustomFormField.dart';
+import 'package:todo_app/style/reusable_components/FireBaseAuthCodes.dart';
 import 'package:todo_app/style/reusable_components/constants.dart';
 
-class RegisterScreen extends StatelessWidget {
+import '../home/HomeScreen.dart';
+
+class RegisterScreen extends StatefulWidget {
   static const String routeName = "RegisterScreen";
+
+  @override
+  State<RegisterScreen> createState() => _RegisterScreenState();
+}
+
+class _RegisterScreenState extends State<RegisterScreen> {
   TextEditingController nameController = TextEditingController();
+
   TextEditingController emailController = TextEditingController();
+
   TextEditingController passwordController = TextEditingController();
+
   TextEditingController repasswordController = TextEditingController();
+
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   @override
@@ -17,8 +32,9 @@ class RegisterScreen extends StatelessWidget {
     double height = MediaQuery.of(context).size.height;
     return Container(
       decoration: BoxDecoration(
+        color: Colors.white,
         image: DecorationImage(
-            image: AssetImage("assets/images/dark_bg.png"),
+            image: AssetImage("assets/images/background.png"),
         )
       ),
       child: Scaffold(
@@ -117,9 +133,26 @@ class RegisterScreen extends StatelessWidget {
       ),
     );
   }
-  creatAccount(){
+
+  creatAccount() async{
     if(formKey.currentState!.validate()){
-      //creat account
+      // call firebase to create account
+      try {
+         UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: emailController.text,
+          password: passwordController.text,
+        );
+         Navigator.pushNamedAndRemoveUntil(context, Homescreen.routeName, (route)=> false);
+        // userCredential.user?.
+      } on FirebaseAuthException catch (e) {
+        if (e.code == FireBaseAuthCodes.WeekPassword) {
+          print('The password provided is too weak.');
+        } else if (e.code == FireBaseAuthCodes.EmailAlreadyInUse) {
+          print('The account already exists for that email.');
+        }
+      } catch (e) {
+        print(e);
+      }
     }
   }
 }

@@ -7,9 +7,23 @@ class AppStyle{
       seedColor: Colors.deepPurple,
       primary: AppColor.lightPrimary,
     ),
+    scaffoldBackgroundColor: AppColor.lightBackgroun,
+    appBarTheme: AppBarTheme(
+      backgroundColor: AppColor.lightPrimary,
+      toolbarHeight: 100,
+      titleTextStyle: TextStyle(
+        fontFamily: "Poppins",
+        fontSize: 22,
+        fontWeight: FontWeight.w700,
+
+      ),
+      iconTheme: IconThemeData(
+        color: Colors.white
+      )
+    ),
     textTheme: TextTheme(
       labelSmall: TextStyle(
-        color: Colors.white,
+        color: Colors.black,
         fontSize: 12,
       ),
     ),
