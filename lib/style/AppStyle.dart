@@ -8,6 +8,12 @@ class AppStyle{
       primary: AppColor.lightPrimary,
     ),
     scaffoldBackgroundColor: AppColor.lightBackgroun,
+    floatingActionButtonTheme: FloatingActionButtonThemeData(
+      backgroundColor: AppColor.lightPrimary,
+    ),
+    bottomNavigationBarTheme: BottomNavigationBarThemeData(
+      selectedItemColor: AppColor.lightPrimary,
+    ),
     appBarTheme: AppBarTheme(
       backgroundColor: AppColor.lightPrimary,
       toolbarHeight: 100,
@@ -27,6 +33,6 @@ class AppStyle{
         fontSize: 12,
       ),
     ),
-    useMaterial3: true,
+    useMaterial3: false,
   );
 }
