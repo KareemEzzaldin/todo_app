@@ -41,6 +41,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         resizeToAvoidBottomInset: true,
         backgroundColor: Colors.transparent,
         appBar: AppBar(
+          elevation: 0,
           backgroundColor: Colors.transparent,
           title: Text("Create Account"),
           centerTitle: true,
