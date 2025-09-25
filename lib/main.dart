@@ -4,6 +4,7 @@ import 'package:todo_app/ui/home/HomeScreen.dart';
 import 'package:todo_app/ui/login/LoginScreen.dart';
 import 'package:todo_app/ui/register/RegisterScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:todo_app/ui/splash/SplashScreen.dart';
 import 'firebase_options.dart';
 
 void main()async {
@@ -28,8 +29,9 @@ class MyApp extends StatelessWidget {
         LoginScreen.routeName:(_)=>LoginScreen(),
         RegisterScreen.routeName:(_)=>RegisterScreen(),
         Homescreen.routeName:(_)=>Homescreen(),
+        SplashScreen.routeName:(_)=>SplashScreen(),
       },
-      initialRoute: Homescreen.routeName,
+      initialRoute: SplashScreen.routeName,
     );
 
   }

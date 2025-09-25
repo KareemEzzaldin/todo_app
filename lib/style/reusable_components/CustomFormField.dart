@@ -7,7 +7,8 @@ class CustomFormField extends StatefulWidget {
   bool isPassword;
   ValidatorType validate;
   TextEditingController controller;
-  CustomFormField({required this.label, required this.controller,required this.KeyboardType, this.isPassword = false, required this.validate});
+  int? maxLength ;
+  CustomFormField({this.maxLength, required this.label, required this.controller,required this.KeyboardType, this.isPassword = false, required this.validate});
 
   @override
   State<CustomFormField> createState() => _CustomFormFieldState();
@@ -18,6 +19,7 @@ class _CustomFormFieldState extends State<CustomFormField> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      maxLength: widget.maxLength,
       controller: widget.controller,
       validator: widget.validate,
       keyboardType: widget.KeyboardType,
@@ -27,6 +29,7 @@ class _CustomFormFieldState extends State<CustomFormField> {
           :false,
       style: Theme.of(context).textTheme.labelSmall?.copyWith(fontSize: 18),
       decoration: InputDecoration(
+        counterText: "", // To hide the maxLength label in the screen
         suffixIcon: widget.isPassword
             ?IconButton(
               onPressed: () {

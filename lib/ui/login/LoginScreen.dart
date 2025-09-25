@@ -1,6 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:todo_app/firestore/model/User.dart' as MyUser;
 import 'package:flutter/material.dart';
+import 'package:todo_app/firestore/FireStoreHandler.dart';
+import 'package:todo_app/style/reusable_components/CustomLodingDialog.dart';
+import 'package:todo_app/style/reusable_components/CustomMessageDialog.dart';
 import 'package:todo_app/style/reusable_components/FireBaseAuthCodes.dart';
 import 'package:todo_app/ui/home/HomeScreen.dart';
 import 'package:todo_app/ui/register/RegisterScreen.dart';
@@ -25,10 +29,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double height = MediaQuery
-        .of(context)
-        .size
-        .height;
+    double height = MediaQuery.of(context).size.height;
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -125,16 +126,27 @@ class _LoginScreenState extends State<LoginScreen> {
     if (formKey.currentState!.validate() == true) {
       // login
       try {
+        showDialog(context: context, builder: (context) => CustomLodingDialog());
         UserCredential credential = await FirebaseAuth.instance
             .signInWithEmailAndPassword(
             email: emailController.text.trim(),
             password: passwordController.text);
+        MyUser.User? user = await FireStoreHandler.readUser(credential.user?.uid);
+        print("Age: ${user?.Age}");
+        Navigator.pop(context);
         Navigator.pushReplacementNamed(context, Homescreen.routeName);
       } on FirebaseAuthException catch (e) {
+        Navigator.pop(context);
         if (e.code == FireBaseAuthCodes.UserNotFound) {
-          print('No user found for that email.');
-        } else if (e.code == FireBaseAuthCodes.WeekPassword) {
-          print('Wrong password provided for that user.');
+          showDialog(context: context, builder: (context) => CustomMessageDialog(
+            message: "No user found for that email.", positiveBtnPress: () {
+            Navigator.pop(context);
+          },),);
+        } else if (e.code == FireBaseAuthCodes.WrongPassword) {
+          showDialog(context: context, builder: (context) => CustomMessageDialog(
+              message: "Wrong password provided for that user.", positiveBtnPress: () {
+                Navigator.pop(context);
+              },),);
         }
       }
     }

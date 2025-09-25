@@ -1,9 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:todo_app/firestore/model/User.dart' as MyUser;
 import 'package:flutter/material.dart';
+import 'package:todo_app/firestore/FireStoreHandler.dart';
 import 'package:todo_app/style/AppStyle.dart';
 import 'package:todo_app/style/reusable_components/CustomButton.dart';
 import 'package:todo_app/style/reusable_components/CustomFormField.dart';
+import 'package:todo_app/style/reusable_components/CustomLodingDialog.dart';
+import 'package:todo_app/style/reusable_components/CustomMessageDialog.dart';
 import 'package:todo_app/style/reusable_components/FireBaseAuthCodes.dart';
 import 'package:todo_app/style/reusable_components/constants.dart';
 
@@ -18,6 +22,10 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   TextEditingController nameController = TextEditingController();
+
+  TextEditingController ageController = TextEditingController();
+
+  TextEditingController phoneController = TextEditingController();
 
   TextEditingController emailController = TextEditingController();
 
@@ -71,8 +79,36 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           return null;
                         },
                     ),
-                    SizedBox(
-                      height: height*0.01,),
+                    SizedBox(height: height*0.01,),
+                    CustomFormField(
+                      controller: ageController,
+                      maxLength: 2  ,
+                      label: "Age",
+                      KeyboardType: TextInputType.number,
+                      validate:(value){
+                        if(value==null || value.isEmpty){
+                          return "Please Enter Age";
+                        }
+                        return null;
+                      },
+                    ),
+                    SizedBox(height: height*0.01,),
+                    CustomFormField(
+                      controller: phoneController,
+                      maxLength: 11,
+                      label: "Phone Number",
+                      KeyboardType: TextInputType.phone,
+                      validate:(value){
+                        if(value==null || value.isEmpty){
+                          return "Please Enter Phone Number";
+                        }
+                        if(value.length < 11){
+                          return "Enter a Valid Phone Number";
+                        }
+                        return null;
+                      },
+                    ),
+                    SizedBox(height: height*0.01,),
                     CustomFormField(
                       controller: emailController,
                         label: "Email Address",
@@ -87,8 +123,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           return null;
                         },
                     ),
-                    SizedBox(
-                      height: height*0.01,),
+                    SizedBox(height: height*0.01,),
                     CustomFormField(
                       controller: passwordController,
                       label: "Password",
@@ -104,8 +139,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         return null;
                       },
                     ),
-                    SizedBox(
-                      height: height*0.01,),
+                    SizedBox(height: height*0.01,),
                     CustomFormField(
                       controller: repasswordController,
                       label: "ReEnter Password",
@@ -139,20 +173,39 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if(formKey.currentState!.validate()){
       // call firebase to create account
       try {
+        showDialog(context: context, builder: (context) => CustomLodingDialog(),);
          UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: emailController.text,
           password: passwordController.text,
         );
+         await FireStoreHandler.creatUser(MyUser.User(
+           ID: userCredential.user!.uid,
+           fullName: nameController.text,
+           Age: int.parse(ageController.text),
+           email: emailController.text,
+           phone: phoneController.text,
+         ));
          Navigator.pushNamedAndRemoveUntil(context, Homescreen.routeName, (route)=> false);
         // userCredential.user?.
       } on FirebaseAuthException catch (e) {
+        Navigator.pop(context);
         if (e.code == FireBaseAuthCodes.WeekPassword) {
-          print('The password provided is too weak.');
+          showDialog(context: context, builder: (context) => CustomMessageDialog(
+            message: "The password provided is too weak.", positiveBtnPress: () {
+            Navigator.pop(context);
+          },),);
         } else if (e.code == FireBaseAuthCodes.EmailAlreadyInUse) {
-          print('The account already exists for that email.');
+          showDialog(context: context, builder: (context) => CustomMessageDialog(
+            message: "The account already exists for that email.", positiveBtnPress: () {
+            Navigator.pop(context);
+          },),);
         }
-      } catch (e) {
-        print(e);
+      } catch (error) {
+        Navigator.pop(context);
+        showDialog(context: context, builder: (context) => CustomMessageDialog(
+            message: error.toString(), positiveBtnPress: () {
+              Navigator.pop(context);
+            },),);
       }
     }
   }

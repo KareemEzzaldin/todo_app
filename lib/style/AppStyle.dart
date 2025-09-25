@@ -16,7 +16,7 @@ class AppStyle{
     ),
     appBarTheme: AppBarTheme(
       backgroundColor: AppColor.lightPrimary,
-      toolbarHeight: 100,
+      toolbarHeight: 120,
       titleTextStyle: TextStyle(
         fontFamily: "Poppins",
         fontSize: 22,
@@ -32,6 +32,12 @@ class AppStyle{
         color: Colors.black,
         fontSize: 12,
       ),
+      titleSmall: TextStyle(
+        color: Colors.black,
+        fontFamily: "Poppins",
+        fontWeight: FontWeight.w700,
+        fontSize: 18
+      )
     ),
     useMaterial3: false,
   );
