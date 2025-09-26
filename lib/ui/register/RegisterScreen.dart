@@ -43,6 +43,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         color: Colors.white,
         image: DecorationImage(
             image: AssetImage("assets/images/background.png"),
+          fit: BoxFit.cover,
         )
       ),
       child: Scaffold(

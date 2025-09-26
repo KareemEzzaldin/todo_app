@@ -35,6 +35,7 @@ class _LoginScreenState extends State<LoginScreen> {
         color: Colors.white,
         image: DecorationImage(
           image: AssetImage("assets/images/background.png"),
+          fit: BoxFit.cover,
         ),
       ),
       child: Scaffold(

@@ -29,7 +29,8 @@ class Task{
 
   factory Task.formFireStore(Map<String, dynamic> data, {required id}) {
     return Task(
-      id: data["id"],
+      // id: data["id"],
+      id: id,
       title: data["title"],
       description: data["description"],
       date: data["date"],
