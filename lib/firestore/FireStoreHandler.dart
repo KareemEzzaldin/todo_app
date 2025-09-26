@@ -124,5 +124,25 @@ class FireStoreHandler {
     return collection.doc(taskID).delete();
   }
 
+  static Future<void> updateTask(
+      String taskID, Task task, String userID) async {
+    var collection = getTaskCollection(userID);
+    await collection.doc(taskID).update(task.toFireStore());
+  }
+
+
+  static Future<void> updateTaskIsDone(
+      String userID, String taskID, bool isDone) async {
+    var collection = getTaskCollection(userID);
+    await collection.doc(taskID).update({"isDone": isDone});
+  }
+
+  static Future<void> markTaskDone(String userID, String taskID) {
+    var collection = getTaskCollection(userID);
+    return collection.doc(taskID).update({
+      "isDone": true,
+    });
+  }
+
 
 }

@@ -5,6 +5,7 @@ import 'package:todo_app/firestore/FireStoreHandler.dart';
 import 'package:todo_app/style/reusable_components/CustomLodingDialog.dart';
 import 'package:todo_app/style/reusable_components/CustomMessageDialog.dart';
 import 'package:todo_app/style/reusable_components/constants.dart';
+import 'package:todo_app/ui/home/widgets/EditTask.dart';
 
 import '../../../../../firestore/model/Task.dart';
 
@@ -16,6 +17,10 @@ class Taskitem extends StatelessWidget {
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
+    // decide color: blue if not done, green if done
+    final Color taskColor = task.isDone
+        ? Colors.green
+        : Theme.of(context).colorScheme.primary;
     return Slidable(
       startActionPane: ActionPane(
           motion: BehindMotion(),
@@ -46,7 +51,7 @@ class Taskitem extends StatelessWidget {
               width: 5,
               height: height*0.08,
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primary,
+                color: taskColor,
                 borderRadius: BorderRadius.circular(10)
               ),
             ),
@@ -59,16 +64,50 @@ class Taskitem extends StatelessWidget {
                     maxLines: 1, // max number of line
                     overflow: TextOverflow.ellipsis, // to add (...) if the title is more than 1 line
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    color: Theme.of(context).colorScheme.primary),),
+                    color: taskColor),),
                   Text(task.description??"", style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    fontSize: 14, fontWeight: FontWeight.w500),),
+                    fontSize: 14, fontWeight: FontWeight.w500, color: taskColor),),
+                  TextButton(
+                      onPressed: () {
+                      showDialog(context: context, builder: (context) => EditTask(task: task,),);
+                  },
+                      child: Text("Edit", style: TextStyle(color: Colors.grey,fontSize: 15),))
                 ],
               ),
             ), // we put expanded so we can give the title and des its own space in case if it was to big so I doesn't mess the icon
             // Spacer(), // used to put space between items
-            ElevatedButton(onPressed: () {
-
-            }, child: Icon(Icons.check))
+            ElevatedButton(
+              onPressed: task.isDone
+                  ? null // مش هيعمل حاجة لو خلاص متعلم Done
+                  : () {
+                FireStoreHandler.markTaskDone(
+                  FirebaseAuth.instance.currentUser!.uid,
+                  task.id ?? "",
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: task.isDone
+                    ? Colors.white // نخليها بيضا عشان كلمة Done تبان أخضر
+                    : Theme.of(context).primaryColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              ),
+              child: task.isDone
+                  ? Text(
+                "Done!",
+                style: TextStyle(
+                  color: Colors.green,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 30,
+                ),
+              )
+                  : Icon(
+                Icons.check,
+                color: Colors.white,
+              ),
+            ),
           ],
         ),
       ),
